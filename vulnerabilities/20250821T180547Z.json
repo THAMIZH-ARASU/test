@@ -1,0 +1,302 @@
+{
+  "run_id": "20250821T180547Z",
+  "repository": "THAMIZH-ARASU/test",
+  "generated_at": "2025-08-21T18:05:50.745260+00:00",
+  "summary": {
+    "num_files_scanned": 1,
+    "num_files_changed": 1,
+    "total_issues": 10
+  },
+  "files": [
+    {
+      "path": "app.py",
+      "issues": [
+        {
+          "line": 17,
+          "type": "VULNERABILITY",
+          "severity": "blocker",
+          "message": "Potential SQL injection vulnerability detected. Use parameterized queries instead of string concatenation.",
+          "rule": "python:S2077",
+          "component": ":temp_app.py",
+          "project": "",
+          "hash": "0e19c80bb8b0777b8b2af6ed73c4ed55",
+          "textRange": {
+            "startLine": 17,
+            "endLine": 17,
+            "startOffset": 0,
+            "endOffset": 64
+          },
+          "flows": [],
+          "effort": "30min",
+          "debt": "30min",
+          "assignee": "",
+          "author": "",
+          "tags": [
+            "security",
+            "sql-injection"
+          ],
+          "scope": "MAIN",
+          "quickFixAvailable": false,
+          "messageFormattings": []
+        },
+        {
+          "line": 33,
+          "type": "VULNERABILITY",
+          "severity": "blocker",
+          "message": "Hardcoded API key detected. Use environment variables or secure configuration management instead.",
+          "rule": "python:S2068",
+          "component": ":temp_app.py",
+          "project": "",
+          "hash": "1cb4e2aaed22f82cc483131bdd01efef",
+          "textRange": {
+            "startLine": 33,
+            "endLine": 33,
+            "startOffset": 0,
+            "endOffset": 41
+          },
+          "flows": [],
+          "effort": "15min",
+          "debt": "15min",
+          "assignee": "",
+          "author": "",
+          "tags": [
+            "security",
+            "credentials"
+          ],
+          "scope": "MAIN",
+          "quickFixAvailable": false,
+          "messageFormattings": []
+        },
+        {
+          "line": 67,
+          "type": "VULNERABILITY",
+          "severity": "blocker",
+          "message": "Insecure deserialization vulnerability: 'pickle.loads' can execute arbitrary code. Use safer alternatives like json or validate input source.",
+          "rule": "python:S5144",
+          "component": ":temp_app.py",
+          "project": "",
+          "hash": "c37b14283f2f26d272b355e862e726a5",
+          "textRange": {
+            "startLine": 67,
+            "endLine": 67,
+            "startOffset": 0,
+            "endOffset": 29
+          },
+          "flows": [],
+          "effort": "30min",
+          "debt": "30min",
+          "assignee": "",
+          "author": "",
+          "tags": [
+            "security",
+            "deserialization"
+          ],
+          "scope": "MAIN",
+          "quickFixAvailable": false,
+          "messageFormattings": []
+        },
+        {
+          "line": 8,
+          "type": "CODE_SMELL",
+          "severity": "minor",
+          "message": "Unused import 'logging'. Remove unused imports to improve code quality and reduce attack surface.",
+          "rule": "python:F401",
+          "component": ":temp_app.py",
+          "project": "",
+          "hash": "56570fe1f6fb1de0838aa0ea3e300403",
+          "textRange": {
+            "startLine": 8,
+            "endLine": 8,
+            "startOffset": 0,
+            "endOffset": 14
+          },
+          "flows": [],
+          "effort": "2min",
+          "debt": "2min",
+          "assignee": "",
+          "author": "",
+          "tags": [
+            "code-quality",
+            "unused-code"
+          ],
+          "scope": "MAIN",
+          "quickFixAvailable": false,
+          "messageFormattings": []
+        },
+        {
+          "line": 7,
+          "type": "CODE_SMELL",
+          "severity": "minor",
+          "message": "Unused import 'subprocess'. Remove unused imports to improve code quality and reduce attack surface.",
+          "rule": "python:F401",
+          "component": ":temp_app.py",
+          "project": "",
+          "hash": "878da3f8297a301851028a78e3661e29",
+          "textRange": {
+            "startLine": 7,
+            "endLine": 7,
+            "startOffset": 0,
+            "endOffset": 17
+          },
+          "flows": [],
+          "effort": "2min",
+          "debt": "2min",
+          "assignee": "",
+          "author": "",
+          "tags": [
+            "code-quality",
+            "unused-code"
+          ],
+          "scope": "MAIN",
+          "quickFixAvailable": false,
+          "messageFormattings": []
+        },
+        {
+          "line": 2,
+          "type": "CODE_SMELL",
+          "severity": "minor",
+          "message": "Unused import 'os'. Remove unused imports to improve code quality and reduce attack surface.",
+          "rule": "python:F401",
+          "component": ":temp_app.py",
+          "project": "",
+          "hash": "07268d7e3a51ec5b2fd1b2e379ebcdbb",
+          "textRange": {
+            "startLine": 2,
+            "endLine": 2,
+            "startOffset": 0,
+            "endOffset": 9
+          },
+          "flows": [],
+          "effort": "2min",
+          "debt": "2min",
+          "assignee": "",
+          "author": "",
+          "tags": [
+            "code-quality",
+            "unused-code"
+          ],
+          "scope": "MAIN",
+          "quickFixAvailable": false,
+          "messageFormattings": []
+        },
+        {
+          "line": 73,
+          "type": "CODE_SMELL",
+          "severity": "minor",
+          "message": "Unused import 'subprocess'. Remove unused imports to improve code quality and reduce attack surface.",
+          "rule": "python:F401",
+          "component": ":temp_app.py",
+          "project": "",
+          "hash": "16e0b8a2107841b43888abaa2ffa9c3a",
+          "textRange": {
+            "startLine": 73,
+            "endLine": 73,
+            "startOffset": 0,
+            "endOffset": 21
+          },
+          "flows": [],
+          "effort": "2min",
+          "debt": "2min",
+          "assignee": "",
+          "author": "",
+          "tags": [
+            "code-quality",
+            "unused-code"
+          ],
+          "scope": "MAIN",
+          "quickFixAvailable": false,
+          "messageFormattings": []
+        },
+        {
+          "line": 82,
+          "type": "VULNERABILITY",
+          "severity": "medium",
+          "message": "Potential unvalidated redirect: 'redirect' called with user-controlled input. Validate and whitelist redirect URLs to prevent phishing attacks.",
+          "rule": "python:S5146",
+          "component": ":temp_app.py",
+          "project": "",
+          "hash": "cb0e579544801f2aafe373cd405e91e8",
+          "textRange": {
+            "startLine": 82,
+            "endLine": 82,
+            "startOffset": 0,
+            "endOffset": 24
+          },
+          "flows": [],
+          "effort": "15min",
+          "debt": "15min",
+          "assignee": "",
+          "author": "",
+          "tags": [
+            "security",
+            "redirect"
+          ],
+          "scope": "MAIN",
+          "quickFixAvailable": false,
+          "messageFormattings": []
+        },
+        {
+          "line": 27,
+          "type": "CODE_SMELL",
+          "severity": "medium",
+          "message": "Insufficient logging: Security-related function 'vulnerable_access_control' lacks proper logging. Add logging for security events to enable monitoring and incident response.",
+          "rule": "python:S2629",
+          "component": ":temp_app.py",
+          "project": "",
+          "hash": "204d5a40314f9bdd5390e9dbadbeeba3",
+          "textRange": {
+            "startLine": 27,
+            "endLine": 27,
+            "startOffset": 0,
+            "endOffset": 32
+          },
+          "flows": [],
+          "effort": "10min",
+          "debt": "10min",
+          "assignee": "",
+          "author": "",
+          "tags": [
+            "security",
+            "logging"
+          ],
+          "scope": "MAIN",
+          "quickFixAvailable": false,
+          "messageFormattings": []
+        },
+        {
+          "line": 1,
+          "type": "VULNERABILITY",
+          "severity": "high",
+          "message": "Potentially vulnerable dependency detected: 'flask'. Ensure you're using the latest secure version (>= 2.0.0).",
+          "rule": "python:S4830",
+          "component": ":temp_app.py",
+          "project": "",
+          "hash": "7e8fc77428ff60072b4bbb39e6fcb86e",
+          "textRange": {
+            "startLine": 1,
+            "endLine": 1,
+            "startOffset": 0,
+            "endOffset": 14
+          },
+          "flows": [],
+          "effort": "10min",
+          "debt": "10min",
+          "assignee": "",
+          "author": "",
+          "tags": [
+            "security",
+            "dependencies"
+          ],
+          "scope": "MAIN",
+          "quickFixAvailable": false,
+          "messageFormattings": []
+        }
+      ],
+      "fixes_applied": {
+        "ai_remediated": 10,
+        "confidence_score": 0.9,
+        "model_used": "llama3-70b-8192"
+      }
+    }
+  ]
+}
