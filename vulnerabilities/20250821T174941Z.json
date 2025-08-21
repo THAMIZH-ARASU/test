@@ -1,0 +1,31 @@
+{
+  "run_id": "20250821T174941Z",
+  "repository": "THAMIZH-ARASU/test",
+  "generated_at": "2025-08-21T17:49:41.857591+00:00",
+  "summary": {
+    "num_files_scanned": 1,
+    "num_files_changed": 0,
+    "total_issues": 1
+  },
+  "files": [
+    {
+      "path": "app.py",
+      "issues": [
+        {
+          "line": 67,
+          "type": "pickle_loads",
+          "severity": "high",
+          "message": "Untrusted pickle deserialization is unsafe"
+        }
+      ],
+      "fixes_applied": {
+        "eval_usage": 0,
+        "subprocess_shell_true": 0,
+        "requests_verify_false": 0,
+        "yaml_unsafe_load": 0,
+        "weak_hash": 0,
+        "pickle_loads": 0
+      }
+    }
+  ]
+}
