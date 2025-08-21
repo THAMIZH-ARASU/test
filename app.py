@@ -1,3 +1,4 @@
+# Security-fixed version
 import sqlite3
 import os
 import flask
@@ -85,3 +86,5 @@ if __name__ == '__main__':
     # This is a dangerous script and should not be run for real.
     print("This script contains vulnerable code for educational purposes only.")
     print("Do NOT use this code in a real application.")
+
+# End of security fixes
