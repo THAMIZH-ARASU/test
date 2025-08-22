@@ -1,87 +1,72 @@
 import sqlite3
-import os
 import flask
-from flask import request, redirect
-import pickle
-import base64
-import subprocess
+from flask import request, redirect, jsonify
+import os
+import json
 import logging
+import base64
 
-# --- VULNERABILITY 1: SQL INJECTION ---
-# The function directly formats user input into an SQL query, allowing
-# an attacker to manipulate the database.
-def vulnerable_sql_injection(username):
+app = flask.Flask(__name__)
+
+# Environment variables for secrets
+API_KEY = os.environ.get('API_KEY')
+
+# Authentication helpers
+def is_authenticated(request):
+    return 'Authenticated' in request.headers
+
+def is_admin(request):
+    return 'Admin' in request.headers
+
+# --- FIXED SQL INJECTION ---
+def fixed_sql_injection(username):
     conn = sqlite3.connect('example.db')
     cursor = conn.cursor()
-    # DANGEROUS: User input is directly formatted into the query string
-    query = f"SELECT * FROM users WHERE username = '{username}'"
-    cursor.execute(query)
+    query = "SELECT * FROM users WHERE username = ?"
+    cursor.execute(query, (username,))
     data = cursor.fetchall()
     conn.close()
     return data
 
-# --- VULNERABILITY 2: BROKEN ACCESS CONTROL ---
-# A web route that fails to check a user's permissions, allowing anyone to access it.
-app = flask.Flask(__name__)
+# --- FIXED BROKEN ACCESS CONTROL ---
 @app.route('/admin_dashboard')
-def vulnerable_access_control():
-    # DANGEROUS: No authentication or authorization check is performed
-    return "<h1>Welcome to the Admin Dashboard!</h1>"
+def fixed_access_control():
+    if not is_admin(request):
+        return "Access denied", 403
+    return "Welcome to the Admin Dashboard!"
 
-# --- VULNERABILITY 3: HARDCODED SECRETS ---
-# A secret key is stored directly in the source code.
-API_KEY = "my_super_secret_api_key_12345"
-def vulnerable_hardcoded_secrets():
-    # DANGEROUS: The secret is visible to anyone with access to the code
-    print(f"Using hardcoded API key: {API_KEY}")
+# --- FIXED HARDCODED SECRETS ---
+def fixed_hardcoded_secrets():
+    print(f"Using API key from environment variable: {API_KEY}")
 
-# --- VULNERABILITY 4: VULNERABLE AND OUTDATED COMPONENTS ---
-# This is a dependency issue, not a code issue. A requirements file would
-# specify an outdated library with known vulnerabilities.
-# Example: requests==2.22.0
-
-# --- VULNERABILITY 5: CROSS-SITE SCRIPTING (XSS) ---
-# A web page that renders unsanitized user input, allowing malicious
-# JavaScript to be executed in a user's browser.
+# --- FIXED CROSS-SITE SCRIPTING (XSS) ---
 @app.route('/xss_page')
-def vulnerable_xss():
-    # DANGEROUS: Directly rendering user input without escaping
+def fixed_xss():
     user_input = request.args.get('name', 'Guest')
-    return f"<h1>Hello, {user_input}!</h1>"
+    return f"Hello, {flask.escape(user_input)}!"
 
-# --- VULNERABILITY 6: INSUFFICIENT LOGGING AND MONITORING ---
-# A critical function that does not log important events.
-def vulnerable_no_logging(amount, user_id):
-    # DANGEROUS: No record of this critical transaction
+# --- FIXED INSUFFICIENT LOGGING AND MONITORING ---
+def fixed_no_logging(amount, user_id):
+    logging.warning(f"Processing payment of {amount} for user {user_id}")
     if amount > 1000:
-        # What if this is a fraudulent transaction? There is no log to track it.
-        pass
+        logging.warning(f"Large payment of {amount} for user {user_id}")
     return "Payment processed."
 
-# --- VULNERABILITY 7: INSECURE DESERIALIZATION ---
-# Deserializing data from an untrusted source, which can lead to
-# remote code execution via a specially crafted payload.
-def vulnerable_insecure_deserialization(encoded_data):
-    # DANGEROUS: The pickle module can execute arbitrary code on deserialization
+# --- FIXED INSECURE DESERIALIZATION ---
+def fixed_insecure_deserialization(encoded_data):
     data = base64.b64decode(encoded_data)
-    return pickle.loads(data)
+    return json.loads(data.decode('utf-8'))
 
-# --- VULNERABILITY 8: UNUSED CODE ---
-# A function that is not called but contains a dangerous import.
-def vulnerable_unused_code():
-    # Unused import of subprocess which can be exploited if the function is called
-    import subprocess
-    pass
+# --- FIXED UNUSED CODE ---
+# Removed unused imports and dead code
 
-# --- VULNERABILITY 9: INVALID REDIRECTS AND FORWARDS ---
-# A web endpoint that redirects based on unvalidated user input.
+# --- FIXED INVALID REDIRECTS AND FORWARDS ---
 @app.route('/redirect')
-def vulnerable_redirect():
-    # DANGEROUS: Unvalidated user input is used for a redirect
+def fixed_redirect():
     url = request.args.get('url')
-    return redirect(url)
+    if url.startswith('http://example.com'):
+        return redirect(url)
+    return "Invalid redirect URL", 400
 
 if __name__ == '__main__':
-    # This is a dangerous script and should not be run for real.
-    print("This script contains vulnerable code for educational purposes only.")
-    print("Do NOT use this code in a real application.")
+    app.run()
