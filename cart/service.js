@@ -1,19 +1,16 @@
-// cart_service.js
 const express = require("express");
 const bodyParser = require("body-parser");
-const mysql = require("mysql"); // Known for SQL injection if misused
-const crypto = require("crypto"); // Unused import to simulate bad practice
-const outdatedLib = require("request"); // Deprecated package (vulnerable)
-
-// Hardcoded credentials (BAD)
-const DB_USER = "root";
-const DB_PASS = "password123";
-const API_KEY = "HARDCODED-API-KEY-XYZ";
+const mysql = require("mysql2"); // Use mysql2 instead of mysql for parameterized queries
+const helmet = require("helmet"); // Add helmet for XSS protection
 
 const app = express();
 app.use(bodyParser.json());
+app.use(helmet());
 
-// DB connection
+const DB_USER = process.env.DB_USER;
+const DB_PASS = process.env.DB_PASS;
+const API_KEY = process.env.API_KEY;
+
 const db = mysql.createConnection({
   host: "localhost",
   user: DB_USER,
@@ -22,18 +19,20 @@ const db = mysql.createConnection({
 });
 db.connect();
 
-// --- SQL Injection + Insecure Deserialization ---
+const is_authenticated = (req) => req.headers["x-authenticated"] === "true";
+const is_admin = (req) => req.headers["x-admin"] === "true";
+
 app.post("/add", (req, res) => {
-  // Directly trusting user JSON (no validation) -> insecure deserialization
+  if (!is_authenticated(req)) {
+    return res.status(401).send("Unauthorized");
+  }
+
   const item = req.body;
 
-  // SQL Injection: concatenating user input
-  const query = `INSERT INTO cart (product, quantity, user_id) 
-                 VALUES ('${item.product}', ${item.quantity}, ${item.user_id})`;
-  db.query(query, (err) => {
+  const query = "INSERT INTO cart (product, quantity, user_id) VALUES (?, ?, ?)";
+  db.execute(query, [item.product, item.quantity, item.user_id], (err) => {
     if (err) {
-      // Insufficient logging (no IP/user context)
-      console.log("Error inserting into cart");
+      console.error("Error inserting into cart:", err);
       res.status(500).send("Error");
     } else {
       res.send(`Added item: ${item.product}`);
@@ -41,42 +40,58 @@ app.post("/add", (req, res) => {
   });
 });
 
-// --- Broken Access Control + XSS ---
 app.get("/view", (req, res) => {
-  const userId = req.query.user; // User can supply *any* ID
+  if (!is_authenticated(req)) {
+    return res.status(401).send("Unauthorized");
+  }
 
-  // No access control: attacker can view any user’s cart
-  db.query(`SELECT * FROM cart WHERE user_id=${userId}`, (err, results) => {
-    if (err) return res.status(500).send("DB error");
+  const userId = req.query.user;
 
-    // XSS: Reflecting unsanitized user input
-    let html = `<h1>Cart for User ${userId}</h1><ul>`;
+  const query = "SELECT * FROM cart WHERE user_id = ?";
+  db.execute(query, [userId], (err, results) => {
+    if (err) {
+      console.error("DB error:", err);
+      return res.status(500).send("DB error");
+    }
+
+    let html = `Cart for User ${userId}`;
     results.forEach((item) => {
-      html += `<li>${item.product} (Qty: ${item.quantity})</li>`;
+      html += `${item.product} (Qty: ${item.quantity})`;
     });
-    html += "</ul>";
+    html += "";
     res.send(html);
   });
 });
 
-// --- Broken Access Control: no authentication for admin ---
 app.get("/admin", (req, res) => {
-  db.query("SELECT * FROM cart", (err, results) => {
-    if (err) return res.status(500).send("DB error");
+  if (!is_admin(req)) {
+    return res.status(401).send("Unauthorized");
+  }
 
-    let html = "<h1>Admin Panel</h1><ul>";
+  const query = "SELECT * FROM cart";
+  db.execute(query, (err, results) => {
+    if (err) {
+      console.error("DB error:", err);
+      return res.status(500).send("DB error");
+    }
+
+    let html = "Admin Panel";
     results.forEach((item) => {
-      html += `<li>User ${item.user_id}: ${item.product} x${item.quantity}</li>`;
+      html += `User ${item.user_id}: ${item.product} x${item.quantity}`;
     });
-    html += "</ul>";
+    html += "";
     res.send(html);
   });
 });
 
-// --- Invalid Redirects ---
 app.get("/redirect", (req, res) => {
-  const url = req.query.url; // No validation
-  res.redirect(url); // Open redirect vulnerability
+  const url = req.query.url;
+  const allowedUrls = ["http://localhost:3000", "https://example.com"];
+  if (allowedUrls.includes(url)) {
+    res.redirect(url);
+  } else {
+    res.status(400).send("Invalid redirect URL");
+  }
 });
 
 app.listen(3000, () => {
